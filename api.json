@@ -561,6 +561,279 @@
         }
       }
     },
+    "/households/{id}/subscription": {
+      "get": {
+        "operationId": "getSubscription",
+        "summary": "Get subscription + entitlements",
+        "tags": [
+          "subscriptions"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "plan": {
+                      "type": "string",
+                      "enum": [
+                        "free",
+                        "premium"
+                      ]
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "active",
+                        "canceled",
+                        "expired"
+                      ]
+                    },
+                    "currentPeriodEnd": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "entitlements": {
+                      "type": "object",
+                      "properties": {
+                        "aiInsights": {
+                          "type": "boolean"
+                        },
+                        "futureProjection": {
+                          "type": "boolean"
+                        },
+                        "unlimitedContexts": {
+                          "type": "boolean"
+                        },
+                        "maxContexts": {
+                          "type": "integer",
+                          "minimum": -9007199254740991,
+                          "maximum": 9007199254740991
+                        }
+                      },
+                      "required": [
+                        "aiInsights",
+                        "futureProjection",
+                        "unlimitedContexts",
+                        "maxContexts"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "plan",
+                    "status",
+                    "currentPeriodEnd",
+                    "entitlements"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/households/{id}/subscription/activate": {
+      "post": {
+        "operationId": "activateSubscription",
+        "summary": "Activate premium (stub)",
+        "tags": [
+          "subscriptions"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "plan": {
+                      "type": "string",
+                      "enum": [
+                        "free",
+                        "premium"
+                      ]
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "active",
+                        "canceled",
+                        "expired"
+                      ]
+                    },
+                    "currentPeriodEnd": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "entitlements": {
+                      "type": "object",
+                      "properties": {
+                        "aiInsights": {
+                          "type": "boolean"
+                        },
+                        "futureProjection": {
+                          "type": "boolean"
+                        },
+                        "unlimitedContexts": {
+                          "type": "boolean"
+                        },
+                        "maxContexts": {
+                          "type": "integer",
+                          "minimum": -9007199254740991,
+                          "maximum": 9007199254740991
+                        }
+                      },
+                      "required": [
+                        "aiInsights",
+                        "futureProjection",
+                        "unlimitedContexts",
+                        "maxContexts"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "plan",
+                    "status",
+                    "currentPeriodEnd",
+                    "entitlements"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/households/{id}/subscription/cancel": {
+      "post": {
+        "operationId": "cancelSubscription",
+        "summary": "Cancel subscription",
+        "tags": [
+          "subscriptions"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "plan": {
+                      "type": "string",
+                      "enum": [
+                        "free",
+                        "premium"
+                      ]
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "active",
+                        "canceled",
+                        "expired"
+                      ]
+                    },
+                    "currentPeriodEnd": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "entitlements": {
+                      "type": "object",
+                      "properties": {
+                        "aiInsights": {
+                          "type": "boolean"
+                        },
+                        "futureProjection": {
+                          "type": "boolean"
+                        },
+                        "unlimitedContexts": {
+                          "type": "boolean"
+                        },
+                        "maxContexts": {
+                          "type": "integer",
+                          "minimum": -9007199254740991,
+                          "maximum": 9007199254740991
+                        }
+                      },
+                      "required": [
+                        "aiInsights",
+                        "futureProjection",
+                        "unlimitedContexts",
+                        "maxContexts"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "plan",
+                    "status",
+                    "currentPeriodEnd",
+                    "entitlements"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/households/{id}/members": {
       "get": {
         "operationId": "listMembers",
