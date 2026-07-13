@@ -15,7 +15,7 @@ jest.mock("@/components/contexts/redeem-code-form", () => ({
 }));
 
 import { fireEvent, render } from "@testing-library/react-native";
-import JoinScreen from "./[code]";
+import JoinScreen from "@/app/join/[code]";
 
 it("prefills the code and navigates home after joining", async () => {
   const { getByText } = await render(<JoinScreen />);
