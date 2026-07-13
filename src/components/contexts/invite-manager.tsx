@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { ListRow } from "@/components/ui/list-row";
 import { Segmented } from "@/components/ui/segmented";
 import { Text } from "@/components/ui/text";
+import { contextErrorMessage } from "@/lib/context-errors";
 import { useHouseholdStore } from "@/stores/household-store";
 
 type Role = "adult" | "teen" | "viewer";
@@ -24,6 +25,7 @@ export function InviteManager() {
   const householdId = useHouseholdStore((s) => s.activeHouseholdId);
   const [role, setRole] = useState<Role>("adult");
   const [expiry, setExpiry] = useState("168");
+  const [error, setError] = useState<string | null>(null);
   const create = useCreateInvitation();
   const revoke = useRevokeInvitation();
   const { data, refetch } = useListInvitations(householdId ?? undefined, {
@@ -32,6 +34,7 @@ export function InviteManager() {
 
   const generate = () => {
     if (!householdId) return;
+    setError(null);
     create.mutate(
       { id: householdId, data: { role, expiresInHours: Number(expiry) } },
       {
@@ -39,6 +42,7 @@ export function InviteManager() {
           void Share.share({ message: inv.url });
           void refetch();
         },
+        onError: (e: unknown) => setError(contextErrorMessage(e)),
       },
     );
   };
@@ -56,6 +60,7 @@ export function InviteManager() {
         <Segmented options={EXPIRIES} value={expiry} onChange={setExpiry} />
       </View>
       <Button label="Gerar convite" onPress={generate} loading={create.isPending} disabled={!householdId} />
+      {error ? <Text className="text-expense">{error}</Text> : null}
       {invitations.map((inv) => (
         <ListRow
           key={inv.id}
@@ -67,7 +72,18 @@ export function InviteManager() {
                 label="Revogar"
                 variant="ghost"
                 size="sm"
-                onPress={() => revoke.mutate({ id: householdId, invId: inv.id }, { onSuccess: () => void refetch() })}
+                loading={revoke.isPending}
+                disabled={revoke.isPending}
+                onPress={() => {
+                  setError(null);
+                  revoke.mutate(
+                    { id: householdId, invId: inv.id },
+                    {
+                      onSuccess: () => void refetch(),
+                      onError: (e: unknown) => setError(contextErrorMessage(e)),
+                    },
+                  );
+                }}
               />
             ) : undefined
           }

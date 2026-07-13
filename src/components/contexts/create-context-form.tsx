@@ -6,6 +6,7 @@ import { Field } from "@/components/ui/field";
 import { Segmented } from "@/components/ui/segmented";
 import { Text } from "@/components/ui/text";
 import { contextErrorMessage } from "@/lib/context-errors";
+import { useHouseholdStore } from "@/stores/household-store";
 
 type ContextType = "individual" | "family" | "shared" | "kids";
 const TYPES: { value: ContextType; label: string }[] = [
@@ -20,6 +21,7 @@ export function CreateContextForm({ onCreated }: { onCreated: (h: { id: string }
   const [type, setType] = useState<ContextType>("individual");
   const [error, setError] = useState<string | null>(null);
   const create = useCreateHousehold();
+  const setActive = useHouseholdStore((s) => s.setActiveHousehold);
 
   const submit = () => {
     if (name.trim().length === 0) return;
@@ -27,7 +29,10 @@ export function CreateContextForm({ onCreated }: { onCreated: (h: { id: string }
     create.mutate(
       { data: { name: name.trim(), type } },
       {
-        onSuccess: (h: { id: string }) => onCreated(h),
+        onSuccess: (h: { id: string }) => {
+          setActive(h.id);
+          onCreated(h);
+        },
         onError: (e: unknown) => setError(contextErrorMessage(e)),
       },
     );

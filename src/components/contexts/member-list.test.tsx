@@ -1,3 +1,7 @@
+jest.mock("@react-native-google-signin/google-signin", () => ({
+  GoogleSignin: {},
+}));
+
 const mockUpdateMutate = jest.fn();
 const mockRemoveMutate = jest.fn();
 jest.mock("@/api/generated", () => ({
@@ -17,7 +21,8 @@ jest.mock("@/stores/household-store", () => ({
   useHouseholdStore: (sel: (s: unknown) => unknown) => sel({ activeHouseholdId: "h1" }),
 }));
 
-import { fireEvent, render } from "@testing-library/react-native";
+import { fireEvent, render, waitFor } from "@testing-library/react-native";
+import { ApiError } from "@/api/client";
 import { MemberList } from "./member-list";
 
 it("lists members with roles", async () => {
@@ -33,4 +38,13 @@ it("removes another member when managing (self is not removable via the row acti
   expect(removeButtons).toHaveLength(1);
   fireEvent.press(removeButtons[0]);
   expect(mockRemoveMutate).toHaveBeenCalledWith({ id: "h1", userId: "u2" }, expect.any(Object));
+});
+
+it("surfaces the mapped error message when removing a member fails", async () => {
+  mockRemoveMutate.mockImplementation((_vars, opts) => opts.onError(new ApiError(409, "HH-T0005")));
+  const { getAllByText, getByText } = await render(<MemberList canManage selfUserId="u1" />);
+  fireEvent.press(getAllByText("Remover")[0]);
+  await waitFor(() => {
+    expect(getByText("O contexto precisa de pelo menos um dono.")).toBeTruthy();
+  });
 });

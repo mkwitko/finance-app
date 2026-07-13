@@ -1,3 +1,7 @@
+jest.mock("@react-native-google-signin/google-signin", () => ({
+  GoogleSignin: {},
+}));
+
 const mockCreateMutate = jest.fn();
 const mockRevokeMutate = jest.fn();
 const mockShare = jest.fn();
@@ -17,6 +21,7 @@ jest.mock("@/stores/household-store", () => ({
 
 import { fireEvent, render, waitFor, act } from "@testing-library/react-native";
 import * as RN from "react-native";
+import { ApiError } from "@/api/client";
 import { InviteManager } from "./invite-manager";
 
 jest.spyOn(RN.Share, "share").mockImplementation(mockShare);
@@ -43,4 +48,13 @@ it("lists active invitations and revokes one", async () => {
   expect(getByText("ABC1234567")).toBeTruthy();
   await act(async () => fireEvent.press(getByText("Revogar")));
   expect(mockRevokeMutate).toHaveBeenCalledWith({ id: "h1", invId: "inv1" }, expect.any(Object));
+});
+
+it("surfaces the mapped error message when creating an invite fails", async () => {
+  mockCreateMutate.mockImplementation((_vars, opts) => opts.onError(new ApiError(403, "INV-T0004")));
+  const { getByText } = await render(<InviteManager />);
+  await act(async () => fireEvent.press(getByText("Gerar convite")));
+  await waitFor(() => {
+    expect(getByText("Você não pode conceder um papel acima do seu.")).toBeTruthy();
+  });
 });

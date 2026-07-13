@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { useRedeemInvitation } from "@/api/generated";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,10 @@ export function RedeemCodeForm({
   const [error, setError] = useState<string | null>(null);
   const setActive = useHouseholdStore((s) => s.setActiveHousehold);
   const redeem = useRedeemInvitation();
+
+  useEffect(() => {
+    setCode(initialCode);
+  }, [initialCode]);
 
   const submit = () => {
     if (code.trim().length === 0) return;
