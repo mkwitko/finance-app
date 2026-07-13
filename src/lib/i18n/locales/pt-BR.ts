@@ -34,8 +34,6 @@ export default {
     title: "Lançamentos",
     empty: "Nenhum lançamento ainda. Importe um extrato ou adicione um.",
     import: "Importar extrato",
-    importTitle: "Colar extrato (OFX/CSV)",
-    importRun: "Importar",
     aiTag: "IA",
   },
 } as const;

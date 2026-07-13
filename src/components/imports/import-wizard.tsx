@@ -8,6 +8,7 @@ import { ListRow } from "@/components/ui/list-row";
 import { Segmented } from "@/components/ui/segmented";
 import { Text } from "@/components/ui/text";
 import { BANK_GUIDES, getBankGuide } from "@/constants/bank-import-guides";
+import { contextErrorMessage } from "@/lib/context-errors";
 import { pickStatement } from "@/lib/pick-statement";
 import { CategoryPickerSheet } from "./category-picker-sheet";
 import { ReviewRow } from "./review-row";
@@ -36,6 +37,8 @@ export function ImportWizard({ onDone }: { onDone: () => void }) {
   const [edits, setEdits] = useState<Edit[]>([]);
   const [result, setResult] = useState<{ imported: number; skipped: number } | null>(null);
   const [pickingCategory, setPickingCategory] = useState<number | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [picking, setPicking] = useState(false);
 
   const accounts = useListAccounts().data?.accounts ?? [];
   const categories = useListCategories().data?.categories ?? [];
@@ -54,18 +57,25 @@ export function ImportWizard({ onDone }: { onDone: () => void }) {
     setEdits([]);
     setResult(null);
     setPickingCategory(null);
+    setError(null);
   };
 
   const pick = async () => {
-    const picked = await pickStatement();
-    if (picked) {
-      setFile(picked);
-      setStep("file");
+    setPicking(true);
+    try {
+      const picked = await pickStatement();
+      if (picked) {
+        setFile(picked);
+        setStep("file");
+      }
+    } finally {
+      setPicking(false);
     }
   };
 
   const analyze = () => {
     if (!accountId || !file) return;
+    setError(null);
     preview.mutate(
       { data: { source, accountId, content: file.content } },
       {
@@ -74,12 +84,14 @@ export function ImportWizard({ onDone }: { onDone: () => void }) {
           setEdits(res.rows.map((r) => ({ included: !r.duplicate, categoryName: r.suggestedCategory })));
           setStep("review");
         },
+        onError: (e: unknown) => setError(contextErrorMessage(e)),
       },
     );
   };
 
   const doCommit = () => {
     if (!accountId) return;
+    setError(null);
     const payloadRows = rows
       .map((r, i) => ({ r, e: edits[i] }))
       .filter(({ e }) => e.included)
@@ -89,7 +101,10 @@ export function ImportWizard({ onDone }: { onDone: () => void }) {
       }));
     commit.mutate(
       { data: { accountId, source, rows: payloadRows } },
-      { onSuccess: (res: { imported: number; skipped: number }) => { setResult(res); setStep("result"); } },
+      {
+        onSuccess: (res: { imported: number; skipped: number }) => { setResult(res); setStep("result"); },
+        onError: (e: unknown) => setError(contextErrorMessage(e)),
+      },
     );
   };
 
@@ -180,11 +195,18 @@ export function ImportWizard({ onDone }: { onDone: () => void }) {
         )}
       </ScrollView>
 
+      {error ? <Text className="px-5 pb-2 text-expense">{error}</Text> : null}
+
       {step === "account" && (
         <WizardFooter primaryLabel="Continuar" primaryDisabled={!accountId} onPrimary={() => setStep("source")} />
       )}
       {step === "source" && (
-        <WizardFooter primaryLabel="Escolher arquivo" onBack={() => setStep("account")} onPrimary={pick} />
+        <WizardFooter
+          primaryLabel="Escolher arquivo"
+          primaryLoading={picking}
+          onBack={() => setStep("account")}
+          onPrimary={pick}
+        />
       )}
       {step === "file" && (
         <WizardFooter

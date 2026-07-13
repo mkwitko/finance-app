@@ -1,3 +1,7 @@
+jest.mock("@react-native-google-signin/google-signin", () => ({
+  GoogleSignin: {},
+}));
+
 const mockPreviewMutate = jest.fn();
 const mockCommitMutate = jest.fn();
 const mockPickStatement = jest.fn();
