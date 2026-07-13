@@ -48,3 +48,14 @@ describe("tokenVars", () => {
     expect(Object.keys(v)).toHaveLength(TOKEN_KEYS.length);
   });
 });
+
+describe("money-semantic colors", () => {
+  it("are identical across accents within each scheme", () => {
+    const MONEY = ["income", "expense", "warning", "investment"] as const;
+    for (const s of SCHEMES)
+      for (const k of MONEY) {
+        const values = ACCENTS.map((a) => THEMES[a][s][k]);
+        expect(new Set(values).size).toBe(1);
+      }
+  });
+});

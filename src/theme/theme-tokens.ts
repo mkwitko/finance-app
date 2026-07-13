@@ -44,7 +44,7 @@ export const THEMES: Record<Accent, Record<Scheme, SemanticTokens>> = {
       bg: "17 19 24", bgElevated: "22 24 31", fg: "242 244 248",
       fgSecondary: "166 172 184", border: "35 38 47", accent: "132 204 22",
       accentFg: "12 20 4", income: "74 222 128", expense: "248 113 113",
-      warning: "250 204 21", investment: "129 140 248", neutral: "148 163 176",
+      warning: "251 191 36", investment: "165 180 252", neutral: "148 163 176",
     },
   },
   warm: {
