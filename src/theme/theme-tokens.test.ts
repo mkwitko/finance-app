@@ -38,6 +38,17 @@ describe("THEMES", () => {
         expect(contrast(t.accentFg, t.accent)).toBeGreaterThanOrEqual(4.5);
       }
   });
+
+  it("money-semantic colors meet WCAG AA against bg", () => {
+    const MONEY = ["income", "expense", "warning", "investment"] as const;
+    for (const a of ACCENTS)
+      for (const s of SCHEMES) {
+        const t = THEMES[a][s];
+        for (const k of MONEY) {
+          expect(contrast(t[k], t.bg)).toBeGreaterThanOrEqual(4.5);
+        }
+      }
+  });
 });
 
 describe("tokenVars", () => {

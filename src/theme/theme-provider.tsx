@@ -12,6 +12,9 @@ export function useTheme() {
   return { mode, accent, scheme, setMode, setAccent };
 }
 
+// Mode axis resolved by baking light/dark values into vars() via tokenVars(accent, scheme);
+// components use var(--…) tokens, not dark: utilities. setColorScheme(mode) keeps RN Appearance consumers consistent;
+// darkMode: "class" required in tailwind.config since setColorScheme throws under darkMode: "media".
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const { mode, accent, scheme } = useTheme();
   const { setColorScheme } = useColorScheme();
