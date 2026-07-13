@@ -1,0 +1,40 @@
+export default {
+  common: {
+    appName: "Copiloto",
+    tagline: "Seu copiloto financeiro",
+    retry: "Tentar de novo",
+    error: "Algo deu errado",
+    loading: "Carregando…",
+    signOut: "Sair",
+    cancel: "Cancelar",
+  },
+  auth: {
+    title: "Entrar",
+    subtitle: "Conecte-se para começar seu plano financeiro",
+    signInGoogle: "Entrar com Google",
+    devLogin: "Entrar no modo dev",
+    email: "E-mail",
+    emailPlaceholder: "voce@exemplo.com",
+    continue: "Continuar",
+    googleNotConfigured: "Google Sign-In ainda não configurado",
+  },
+  tabs: {
+    today: "Hoje",
+    transactions: "Lançamentos",
+  },
+  today: {
+    greeting: "Olá, {{name}}",
+    nextStepTitle: "Seu próximo passo",
+    nextStepEmpty: "Importe um extrato para receber seu primeiro passo.",
+    balanceLabel: "Saldo estimado no mês",
+    createHousehold: "Criar meu núcleo financeiro",
+  },
+  transactions: {
+    title: "Lançamentos",
+    empty: "Nenhum lançamento ainda. Importe um extrato ou adicione um.",
+    import: "Importar extrato",
+    importTitle: "Colar extrato (OFX/CSV)",
+    importRun: "Importar",
+    aiTag: "IA",
+  },
+} as const;
