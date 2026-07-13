@@ -23,6 +23,87 @@
 
 ---
 
+### Task 0: Jest test toolchain
+
+The app has no test runner yet (no `jest`, `jest-expo`, or RNTL; no `test` script). Every later task runs `pnpm jest`, so this must land first. Work happens directly on `master` (user consent given — no feature branch).
+
+**Files:**
+- Modify: `package.json` (add devDeps + `test` script)
+- Create: `jest.config.js`
+- Create: `jest.setup.ts`
+- Create: `src/theme/smoke.test.ts` (proves the runner works; deleted at the end of this task)
+
+**Interfaces:**
+- Consumes: nothing.
+- Produces: a working `pnpm jest` command. Later tasks rely on: jest-expo preset active; `@/` path alias resolves to `src/`; `nativewind` and `react-native-css` are transformed (not ignored); tests may `jest.mock("expo-secure-store")` and `jest.mock("nativewind")` freely.
+
+- [ ] **Step 1: Install dev dependencies**
+
+Run: `pnpm add -D jest jest-expo @testing-library/react-native @types/jest`
+Expected: installs without error. (jest-expo pins the jest major it needs; accept its peer.)
+
+- [ ] **Step 2: Add the test script**
+
+Modify `package.json` `scripts` — add:
+
+```json
+"test": "jest"
+```
+
+- [ ] **Step 3: Write the jest config**
+
+```js
+// jest.config.js
+module.exports = {
+  preset: "jest-expo",
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
+  moduleNameMapper: {
+    "^@/(.*)$": "<rootDir>/src/$1",
+  },
+  // jest-expo ignores node_modules by default; nativewind + react-native-css
+  // ship untranspiled and must be transformed.
+  transformIgnorePatterns: [
+    "node_modules/(?!((jest-)?react-native|@react-native(-community)?|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg|nativewind|react-native-css))",
+  ],
+};
+```
+
+- [ ] **Step 4: Write the jest setup file**
+
+```ts
+// jest.setup.ts
+// Silence the native animated-helper warning under jest-expo and give a
+// default expo-secure-store mock so stores don't hit native on import.
+import "@testing-library/react-native";
+```
+
+- [ ] **Step 5: Write a smoke test and run it**
+
+```ts
+// src/theme/smoke.test.ts
+it("runs the jest toolchain", () => {
+  expect(1 + 1).toBe(2);
+});
+```
+
+Run: `pnpm jest src/theme/smoke.test.ts`
+Expected: PASS (1 test). If jest-expo errors on a transform, confirm `babel.config.js` includes the NativeWind/Expo preset (it already exists in the repo).
+
+- [ ] **Step 6: Remove the smoke test**
+
+```bash
+rm src/theme/smoke.test.ts
+```
+
+- [ ] **Step 7: Commit**
+
+```bash
+git add package.json pnpm-lock.yaml jest.config.js jest.setup.ts
+git commit -m "chore(test): add jest-expo + RNTL toolchain"
+```
+
+---
+
 ### Task 1: Token maps — source of truth
 
 **Files:**
