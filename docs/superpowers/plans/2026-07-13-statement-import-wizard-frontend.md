@@ -538,8 +538,9 @@ Run: `pnpm jest src/components/imports/import-wizard.test.tsx` → FAIL (module 
 ```tsx
 // src/components/imports/import-wizard.tsx
 import { useState } from "react";
-import { ScrollView, View } from "react-native";
+import { Pressable, ScrollView, View } from "react-native";
 import { useCommitImport, useListAccounts, useListCategories, usePreviewImport } from "@/api/generated";
+import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { ListRow } from "@/components/ui/list-row";
@@ -633,7 +634,29 @@ export function ImportWizard({ onDone }: { onDone: () => void }) {
           <View className="gap-3">
             <Text variant="title">Como baixar seu extrato</Text>
             <Segmented options={SOURCES} value={source} onChange={setSource} />
-            <Segmented options={BANK_GUIDES.map((g) => ({ value: g.id, label: g.label }))} value={bankId} onChange={setBankId} />
+            <View className="gap-2">
+              <Text variant="label">Seu banco</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingRight: 8 }}>
+                {BANK_GUIDES.map((g) => {
+                  const selected = g.id === bankId;
+                  return (
+                    <Pressable
+                      key={g.id}
+                      accessibilityRole="button"
+                      accessibilityState={{ selected }}
+                      onPress={() => setBankId(g.id)}
+                      className={cn(
+                        "flex-row items-center gap-1.5 rounded-full border px-3 py-2",
+                        selected ? "border-accent bg-bg-elevated" : "border-border",
+                      )}
+                    >
+                      <Text className="text-sm">{g.emoji}</Text>
+                      <Text className={cn("text-sm font-semibold", selected ? "text-accent" : "text-fg-secondary")}>{g.label}</Text>
+                    </Pressable>
+                  );
+                })}
+              </ScrollView>
+            </View>
             <Card className="gap-2">
               <Text variant="label">{guide.emoji} {guide.label} → {source.toUpperCase()}</Text>
               {(source === "ofx" ? guide.ofxSteps : guide.csvSteps).map((s, i) => (
@@ -688,7 +711,7 @@ export function ImportWizard({ onDone }: { onDone: () => void }) {
 }
 ```
 
-UX note: the bank `Segmented` with 8 options will be cramped on a phone. Acceptable for this task's gate (tests + build), but wrap it in a horizontal `ScrollView` (or swap to a scrollable chip row) so the pills don't squash — do this within this task if quick, else leave a `// TODO: scrollable bank picker` and it's a fine follow-up. Functionality/tests are unaffected either way.
+UX note: bank selection is a **horizontal-scroll chip row** (built above), NOT a cramped Segmented — chips must not squash; keep them in a `ScrollView horizontal`. The 2-option source stays a Segmented (fine). Make the review list and step spacing feel polished (consistent `gap`, section labels).
 
 - [ ] **Step 4: Run test to verify it passes**
 
