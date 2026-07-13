@@ -10,8 +10,8 @@ it("Badge tones map to token text color", async () => {
 });
 
 it("ProgressBar clamps and reports accessibility value", async () => {
-  const { getByTestId } = await render(<ProgressBar value={1.5} testID="progress-bar" />);
-  expect(getByTestId("progress-bar").props.accessibilityValue).toEqual({ now: 100, min: 0, max: 100 });
+  const { getByRole } = await render(<ProgressBar value={1.5} />);
+  expect(getByRole("progressbar").props.accessibilityValue).toEqual({ now: 100, min: 0, max: 100 });
 });
 
 it("Skeleton renders a placeholder block", async () => {
