@@ -1,12 +1,7 @@
-import { useState } from "react";
+import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { ActivityIndicator, FlatList, TextInput, View } from "react-native";
-import {
-  useCreateAccount,
-  useCreateImport,
-  useListAccounts,
-  useListTransactions,
-} from "@/api/generated";
+import { ActivityIndicator, FlatList, View } from "react-native";
+import { useCreateAccount, useListAccounts, useListTransactions } from "@/api/generated";
 import { ScreenContainer } from "@/components/layout/screen-container";
 import { TransactionRow } from "@/components/transactions/transaction-row";
 import { Button } from "@/components/ui/button";
@@ -21,24 +16,8 @@ export default function TransactionsScreen() {
   const accounts = useListAccounts({ query: { enabled } });
   const txns = useListTransactions(undefined, { query: { enabled } });
   const createAccount = useCreateAccount();
-  const createImport = useCreateImport();
-  const [content, setContent] = useState("");
 
   const firstAccount = accounts.data?.accounts?.[0];
-
-  const onImport = () => {
-    if (!firstAccount || content.trim().length === 0) return;
-    const source: "ofx" | "csv" = content.includes("STMTTRN") ? "ofx" : "csv";
-    createImport.mutate(
-      { data: { source, accountId: firstAccount.id, content } },
-      {
-        onSuccess: () => {
-          setContent("");
-          void txns.refetch();
-        },
-      },
-    );
-  };
 
   return (
     <ScreenContainer>
@@ -59,21 +38,11 @@ export default function TransactionsScreen() {
       )}
 
       {firstAccount && (
-        <View className="mt-4">
-          <TextInput
-            value={content}
-            onChangeText={setContent}
-            multiline
-            placeholder={t("transactions:importTitle")}
-            className="h-24 rounded-2xl border border-neutral-300 p-3 text-neutral-900 dark:border-neutral-700 dark:text-neutral-100"
-          />
-          <Button
-            className="mt-2"
-            label={t("transactions:importRun")}
-            loading={createImport.isPending}
-            onPress={onImport}
-          />
-        </View>
+        <Button
+          className="mt-4"
+          label="Importar extrato"
+          onPress={() => router.push("/import")}
+        />
       )}
 
       <View className="mt-4 flex-1">
