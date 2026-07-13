@@ -41,10 +41,17 @@ export function InsightsFeed() {
           <Skeleton className="h-24" />
         </View>
       ) : insights.length === 0 ? (
-        <EmptyState
-          title="Ainda não há insights"
-          message="Importe transações ou toque em Atualizar para gerar insights."
-        />
+        householdId ? (
+          <EmptyState
+            title="Ainda não há insights"
+            message="Importe transações ou toque em Atualizar para gerar insights."
+          />
+        ) : (
+          <EmptyState
+            title="Nenhum contexto ativo"
+            message="Selecione ou crie um contexto para ver insights."
+          />
+        )
       ) : (
         <ScrollView
           className="px-5"

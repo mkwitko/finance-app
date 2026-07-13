@@ -29,7 +29,10 @@ export function InsightCard({ insight }: { insight: Insight }) {
     <Card className="gap-2">
       <View className="flex-row items-center justify-between">
         <Text variant="title">{insight.title}</Text>
-        <Badge label={SEVERITY_LABEL[insight.severity]} tone={TONE[insight.severity]} />
+        <Badge
+          label={SEVERITY_LABEL[insight.severity] ?? "Info"}
+          tone={TONE[insight.severity] ?? "neutral"}
+        />
       </View>
       <Text className="text-fg-secondary">{insight.body}</Text>
       {insight.recommendation ? (

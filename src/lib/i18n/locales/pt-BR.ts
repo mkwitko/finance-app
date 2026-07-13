@@ -21,6 +21,7 @@ export default {
   tabs: {
     today: "Hoje",
     transactions: "Lançamentos",
+    insights: "Insights",
   },
   today: {
     greeting: "Olá, {{name}}",

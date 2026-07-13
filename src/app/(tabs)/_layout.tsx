@@ -20,6 +20,13 @@ export default function TabsLayout() {
           tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 20 }}>≡</Text>,
         }}
       />
+      <Tabs.Screen
+        name="insights"
+        options={{
+          title: t("tabs:insights"),
+          tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 20 }}>✦</Text>,
+        }}
+      />
     </Tabs>
   );
 }
