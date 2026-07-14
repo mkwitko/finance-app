@@ -24,6 +24,13 @@ describe("contextErrorMessage", () => {
     expect(contextErrorMessage(new ApiError(403, "INV-T0004"))).toMatch(/papel/i);
   });
 
+  it("maps subscription codes", () => {
+    expect(contextErrorMessage(new ApiError(409, "SUB-T0003"))).toMatch(/já.*assinatura|já assinado/i);
+    expect(contextErrorMessage(new ApiError(409, "SUB-T0004"))).toMatch(/nenhuma assinatura/i);
+    expect(contextErrorMessage(new ApiError(503, "SUB-T0002"))).toMatch(/indispon/i);
+    expect(contextErrorMessage(new ApiError(502, "SUB-T0005"))).toMatch(/pagamento/i);
+  });
+
   it("falls back for unknown errors", () => {
     expect(contextErrorMessage(new ApiError(500, "SYS-T0001"))).toMatch(/algo deu errado/i);
     expect(contextErrorMessage(new Error("boom"))).toMatch(/algo deu errado/i);

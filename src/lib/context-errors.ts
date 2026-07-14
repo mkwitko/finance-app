@@ -8,6 +8,12 @@ const MESSAGES: Record<string, string> = {
   "HH-T0005": "O contexto precisa de pelo menos um dono.",
   "HH-T0002": "Você não é membro deste contexto.",
   "HH-T0003": "Seu papel não permite esta ação.",
+  "SUB-T0001": "Plano indisponível no momento.",
+  "SUB-T0002": "Pagamentos indisponíveis no momento.",
+  "SUB-T0003": "Este contexto já possui uma assinatura ativa.",
+  "SUB-T0004": "Nenhuma assinatura ativa encontrada.",
+  "SUB-T0005": "Falha no pagamento. Tente novamente.",
+  "SUB-T0006": "O contexto não possui um dono para a cobrança.",
 };
 
 export function contextErrorMessage(err: unknown): string {
