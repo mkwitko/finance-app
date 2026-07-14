@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Text } from "@/components/ui/text";
-import { useEntitlement, type EntitlementFeature } from "@/hooks/use-entitlements";
+import { useEntitlements, type EntitlementFeature } from "@/hooks/use-entitlements";
 
 export function PaywallGate({
   feature,
@@ -14,9 +14,10 @@ export function PaywallGate({
   title?: string;
   children: ReactNode;
 }) {
-  const entitled = useEntitlement(feature);
+  const { entitlements, isLoading } = useEntitlements();
   const router = useRouter();
-  if (entitled) return <>{children}</>;
+  if (isLoading) return null;
+  if (entitlements[feature]) return <>{children}</>;
   return (
     <Card className="gap-3">
       <Text variant="title">{title ?? "Recurso Premium"}</Text>
