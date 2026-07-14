@@ -65,4 +65,18 @@ describe("PlanScreen", () => {
     expect(screen.getByText(/Premium/i)).toBeTruthy();
     expect(screen.getByText(/Cancelar/i)).toBeTruthy();
   });
+
+  it("cancelAtPeriodEnd premium hides cancel button and shows access note", async () => {
+    mockSubData = {
+      plan: "premium",
+      status: "active",
+      currentPeriodEnd: "2099-01-01T00:00:00.000Z",
+      cancelAtPeriodEnd: true,
+      interval: "monthly",
+      entitlements: { aiInsights: true, futureProjection: true, unlimitedContexts: true, maxContexts: 9999 },
+    };
+    await render(<PlanScreen />);
+    expect(screen.getByText(/Acesso até/i)).toBeTruthy();
+    expect(screen.queryByText(/Cancelar assinatura/i)).toBeNull();
+  });
 });
