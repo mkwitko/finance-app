@@ -1,6 +1,7 @@
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Alert, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import { useQueryClient } from "@tanstack/react-query";
 import { listHouseholdsQueryKey, useListMembers, useRemoveMember, useTransferOwnership } from "@/api/generated";
 import { Badge } from "@/components/ui/badge";
@@ -32,6 +33,7 @@ export function MemberList({
   canManage: boolean;
   selfUserId?: string;
 }) {
+  const { t } = useTranslation();
   const householdId = useHouseholdStore((s) => s.activeHouseholdId);
   const setActiveHousehold = useHouseholdStore((s) => s.setActiveHousehold);
   const router = useRouter();
@@ -87,11 +89,11 @@ export function MemberList({
 
   const confirmTransfer = (member: { userId: string; name: string }) => {
     Alert.alert(
-      "Transferir propriedade",
-      `Você deixará o contexto e ${member.name} será o dono. Continuar?`,
+      t("members:transferButton"),
+      t("members:transferConfirmMessage", { name: member.name }),
       [
-        { text: "Cancelar", style: "cancel" },
-        { text: "Transferir", style: "destructive", onPress: () => transferOwnership(member.userId) },
+        { text: t("common:cancel"), style: "cancel" },
+        { text: t("members:transferConfirmAction"), style: "destructive", onPress: () => transferOwnership(member.userId) },
       ],
     );
   };
@@ -100,7 +102,7 @@ export function MemberList({
     if (!selfUserId) return;
     if (isLastOwner) {
       if (adults.length === 0) {
-        setError("Promova ou convide um adulto antes de sair.");
+        setError(t("members:leaveBlockedMessage"));
         return;
       }
       setError(null);
@@ -122,7 +124,7 @@ export function MemberList({
               <View className="flex-row gap-2">
                 {m.role === "adult" ? (
                   <Button
-                    label="Transferir propriedade"
+                    label={t("members:transferButton")}
                     variant="ghost"
                     size="sm"
                     loading={transfer.isPending}
@@ -131,7 +133,7 @@ export function MemberList({
                   />
                 ) : null}
                 <Button
-                  label="Remover"
+                  label={t("common:remove")}
                   variant="ghost"
                   size="sm"
                   loading={remove.isPending}
@@ -147,14 +149,14 @@ export function MemberList({
       {selfUserId ? (
         <Button
           className="mt-3"
-          label="Sair do contexto"
+          label={t("members:leaveButton")}
           variant="danger"
           loading={remove.isPending || transfer.isPending}
           disabled={remove.isPending || transfer.isPending}
           onPress={onLeavePress}
         />
       ) : null}
-      <Sheet visible={pickerVisible} onClose={() => setPickerVisible(false)} title="Escolher novo dono">
+      <Sheet visible={pickerVisible} onClose={() => setPickerVisible(false)} title={t("members:pickerTitle")}>
         {adults.map((a) => (
           <ListRow key={a.userId} title={a.name} onPress={() => transferOwnership(a.userId)} />
         ))}

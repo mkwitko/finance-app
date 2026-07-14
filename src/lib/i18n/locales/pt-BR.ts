@@ -66,4 +66,31 @@ export default {
       submit: "Entrar",
     },
   },
+  members: {
+    title: "Membros",
+    transferButton: "Transferir propriedade",
+    transferConfirmMessage: "Você deixará o contexto e {{name}} será o dono. Continuar?",
+    transferConfirmAction: "Transferir",
+    leaveButton: "Sair do contexto",
+    leaveBlockedMessage: "Promova ou convide um adulto antes de sair.",
+    pickerTitle: "Escolher novo dono",
+  },
+  invites: {
+    title: "Convites",
+    roleLabel: "Papel do convidado",
+    expiryLabel: "Validade",
+    generateButton: "Gerar convite",
+    revokeButton: "Revogar",
+    roleRow: "Papel: {{role}}",
+    roles: {
+      adult: "Adulto",
+      teen: "Adolescente",
+      viewer: "Visualizador",
+    },
+    expiries: {
+      day: "1 dia",
+      week: "7 dias",
+      month: "30 dias",
+    },
+  },
 } as const;

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Share, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import { useCreateInvitation, useListInvitations, useRevokeInvitation } from "@/api/generated";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -10,18 +11,19 @@ import { contextErrorMessage } from "@/lib/context-errors";
 import { useHouseholdStore } from "@/stores/household-store";
 
 type Role = "adult" | "teen" | "viewer";
-const ROLES: { value: Role; label: string }[] = [
-  { value: "adult", label: "Adulto" },
-  { value: "teen", label: "Adolescente" },
-  { value: "viewer", label: "Visualizador" },
-];
-const EXPIRIES: { value: string; label: string }[] = [
-  { value: "24", label: "1 dia" },
-  { value: "168", label: "7 dias" },
-  { value: "720", label: "30 dias" },
-];
 
 export function InviteManager() {
+  const { t } = useTranslation();
+  const ROLES: { value: Role; label: string }[] = [
+    { value: "adult", label: t("invites:roles.adult") },
+    { value: "teen", label: t("invites:roles.teen") },
+    { value: "viewer", label: t("invites:roles.viewer") },
+  ];
+  const EXPIRIES: { value: string; label: string }[] = [
+    { value: "24", label: t("invites:expiries.day") },
+    { value: "168", label: t("invites:expiries.week") },
+    { value: "720", label: t("invites:expiries.month") },
+  ];
   const householdId = useHouseholdStore((s) => s.activeHouseholdId);
   const [role, setRole] = useState<Role>("adult");
   const [expiry, setExpiry] = useState("168");
@@ -52,24 +54,24 @@ export function InviteManager() {
   return (
     <Card className="gap-4">
       <View className="gap-2">
-        <Text variant="label">Papel do convidado</Text>
+        <Text variant="label">{t("invites:roleLabel")}</Text>
         <Segmented options={ROLES} value={role} onChange={setRole} />
       </View>
       <View className="gap-2">
-        <Text variant="label">Validade</Text>
+        <Text variant="label">{t("invites:expiryLabel")}</Text>
         <Segmented options={EXPIRIES} value={expiry} onChange={setExpiry} />
       </View>
-      <Button label="Gerar convite" onPress={generate} loading={create.isPending} disabled={!householdId} />
+      <Button label={t("invites:generateButton")} onPress={generate} loading={create.isPending} disabled={!householdId} />
       {error ? <Text className="text-expense">{error}</Text> : null}
       {invitations.map((inv) => (
         <ListRow
           key={inv.id}
           title={inv.code}
-          subtitle={`Papel: ${inv.role}`}
+          subtitle={t("invites:roleRow", { role: inv.role })}
           trailing={
             householdId ? (
               <Button
-                label="Revogar"
+                label={t("invites:revokeButton")}
                 variant="ghost"
                 size="sm"
                 loading={revoke.isPending}
