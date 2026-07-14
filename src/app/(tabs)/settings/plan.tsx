@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Alert, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import { useCancelSubscription, useGetSubscription, useSwitchSubscriptionInterval } from "@/api/generated";
 import { PlanComparison } from "@/components/subscription/plan-comparison";
 import { Button } from "@/components/ui/button";
@@ -11,10 +12,6 @@ import { contextErrorMessage } from "@/lib/context-errors";
 import { useHouseholdStore } from "@/stores/household-store";
 
 type Interval = "monthly" | "annual";
-const INTERVALS: { value: Interval; label: string }[] = [
-  { value: "monthly", label: "Mensal" },
-  { value: "annual", label: "Anual" },
-];
 
 function formatDate(iso: string | null): string {
   if (!iso) return "";
@@ -23,6 +20,11 @@ function formatDate(iso: string | null): string {
 }
 
 export default function PlanScreen() {
+  const { t } = useTranslation();
+  const INTERVALS: { value: Interval; label: string }[] = [
+    { value: "monthly", label: t("subscription:intervals.monthly") },
+    { value: "annual", label: t("subscription:intervals.annual") },
+  ];
   const householdId = useHouseholdStore((s) => s.activeHouseholdId);
   const { data, refetch } = useGetSubscription(householdId ?? undefined, {
     query: { enabled: Boolean(householdId) },
@@ -57,10 +59,10 @@ export default function PlanScreen() {
 
   function onCancel() {
     if (!householdId) return;
-    Alert.alert("Cancelar assinatura", "Você manterá o acesso até o fim do período pago. Confirmar?", [
-      { text: "Voltar", style: "cancel" },
+    Alert.alert(t("subscription:cancelButton"), t("subscription:cancelConfirmMessage"), [
+      { text: t("subscription:cancelConfirmBack"), style: "cancel" },
       {
-        text: "Cancelar assinatura",
+        text: t("subscription:cancelButton"),
         style: "destructive",
         onPress: () =>
           cancel.mutate(
@@ -73,29 +75,29 @@ export default function PlanScreen() {
 
   return (
     <View className="flex-1 gap-4 bg-bg p-5">
-      <Text variant="title">Plano</Text>
+      <Text variant="title">{t("subscription:screenTitle")}</Text>
 
       {!isPremium ? (
         <>
           <PlanComparison />
           <View className="gap-2">
-            <Text variant="label">Ciclo de cobrança</Text>
+            <Text variant="label">{t("subscription:billingCycleLabel")}</Text>
             <Segmented options={INTERVALS} value={interval} onChange={setInterval} />
           </View>
-          <Button label="Assinar Premium" loading={isBusy} onPress={onSubscribe} />
+          <Button label={t("subscription:subscribeButton")} loading={isBusy} onPress={onSubscribe} />
         </>
       ) : (
         <>
           <Card className="gap-2">
-            <Text variant="title">Premium</Text>
+            <Text variant="title">{t("subscription:premiumTitle")}</Text>
             <Text className="text-fg-secondary">
-              {sub?.interval === "annual" ? "Cobrança anual" : "Cobrança mensal"}
+              {sub?.interval === "annual" ? t("subscription:annualBilling") : t("subscription:monthlyBilling")}
             </Text>
             {sub?.currentPeriodEnd ? (
               <Text className="text-fg-secondary">
                 {sub.cancelAtPeriodEnd
-                  ? `Acesso até ${formatDate(sub.currentPeriodEnd)}`
-                  : `Renova em ${formatDate(sub.currentPeriodEnd)}`}
+                  ? t("subscription:accessUntil", { date: formatDate(sub.currentPeriodEnd) })
+                  : t("subscription:renewsOn", { date: formatDate(sub.currentPeriodEnd) })}
               </Text>
             ) : null}
           </Card>
@@ -103,14 +105,14 @@ export default function PlanScreen() {
           {!sub?.cancelAtPeriodEnd ? (
             <>
               <View className="gap-2">
-                <Text variant="label">Mudar ciclo</Text>
+                <Text variant="label">{t("subscription:changeCycleLabel")}</Text>
                 <Segmented
                   options={INTERVALS}
                   value={sub?.interval ?? "monthly"}
                   onChange={onSwitch}
                 />
               </View>
-              <Button label="Cancelar assinatura" variant="danger" loading={cancel.isPending} onPress={onCancel} />
+              <Button label={t("subscription:cancelButton")} variant="danger" loading={cancel.isPending} onPress={onCancel} />
             </>
           ) : null}
         </>

@@ -1,6 +1,7 @@
 import { useRouter } from "expo-router";
 import type { ReactNode } from "react";
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Text } from "@/components/ui/text";
@@ -15,6 +16,7 @@ export function PaywallGate({
   title?: string;
   children: ReactNode;
 }) {
+  const { t } = useTranslation();
   const { entitlements, isLoading } = useEntitlements();
   const router = useRouter();
   if (isLoading) return null;
@@ -25,9 +27,9 @@ export function PaywallGate({
   return (
     <View className="p-5">
       <Card className="gap-3">
-        <Text variant="title">{title ?? "Recurso Premium"}</Text>
-        <Text className="text-fg-secondary">Assine o Premium para desbloquear este recurso.</Text>
-        <Button label="Ver planos" onPress={() => router.push("/(tabs)/settings/plan")} />
+        <Text variant="title">{title ?? t("subscription:defaultTitle")}</Text>
+        <Text className="text-fg-secondary">{t("subscription:lockedMessage")}</Text>
+        <Button label={t("subscription:viewPlansButton")} onPress={() => router.push("/(tabs)/settings/plan")} />
       </Card>
     </View>
   );
