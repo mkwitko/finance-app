@@ -176,4 +176,7 @@ export default {
       warm: "Warm",
     },
   },
+  settings: {
+    themeTitle: "Tema",
+  },
 } as const;
