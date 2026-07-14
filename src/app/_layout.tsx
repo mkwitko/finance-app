@@ -16,8 +16,8 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <StripeProvider
         publishableKey={env.stripePublishableKey ?? ""}
-        merchantIdentifier="merchant.com.financeapp"
-        urlScheme="financeapp"
+        merchantIdentifier={env.stripeMerchantId}
+        urlScheme={env.stripeUrlScheme}
       >
         <ThemeProvider>
           <QueryClientProvider client={queryClient}>

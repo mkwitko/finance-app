@@ -2,6 +2,7 @@ import { initStripe, useStripe } from "@stripe/stripe-react-native";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { getSubscriptionQueryKey, useCheckoutSubscription } from "@/api/generated";
+import { env } from "@/env";
 import { contextErrorMessage } from "@/lib/context-errors";
 import { useHouseholdStore } from "@/stores/household-store";
 
@@ -25,7 +26,7 @@ export function usePaymentSheetCheckout() {
     try {
       const session = await checkout.mutateAsync({ id: householdId, data: { interval } });
       if (session.publishableKey) {
-        await initStripe({ publishableKey: session.publishableKey, merchantIdentifier: "merchant.com.financeapp" });
+        await initStripe({ publishableKey: session.publishableKey, merchantIdentifier: env.stripeMerchantId });
       }
       const { error: initError } = await initPaymentSheet({
         merchantDisplayName: "Finance",
@@ -33,7 +34,7 @@ export function usePaymentSheetCheckout() {
         customerEphemeralKeySecret: session.ephemeralKeySecret,
         paymentIntentClientSecret: session.paymentIntentClientSecret ?? "",
         allowsDelayedPaymentMethods: false,
-        returnURL: "financeapp://stripe-redirect",
+        returnURL: `${env.stripeUrlScheme}://stripe-redirect`,
       });
       if (initError) return { ok: false, error: initError.message };
       const { error: presentError } = await presentPaymentSheet();

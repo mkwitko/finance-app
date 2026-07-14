@@ -1,5 +1,13 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react-native";
+import * as RN from "react-native";
+import { ApiError } from "@/api/client";
 import PlanScreen from "@/app/(tabs)/settings/plan";
+
+// onCancel confirms via a native Alert before calling cancel.mutate; auto-press
+// the destructive option so cancel tests can exercise the mutation directly.
+jest.spyOn(RN.Alert, "alert").mockImplementation((_title, _message, buttons) => {
+  buttons?.find((b) => b.style === "destructive")?.onPress?.();
+});
 
 // plan.tsx -> @/lib/context-errors -> @/api/client -> @/lib/auth, which pulls in
 // the native google-signin module. Mock it before any imports resolve it.
@@ -78,5 +86,39 @@ describe("PlanScreen", () => {
     await render(<PlanScreen />);
     expect(screen.getByText(/Acesso até/i)).toBeTruthy();
     expect(screen.queryByText(/Cancelar assinatura/i)).toBeNull();
+  });
+
+  it("shows the mapped error message when switching interval fails", async () => {
+    mockSubData = {
+      plan: "premium",
+      status: "active",
+      currentPeriodEnd: "2099-01-01T00:00:00.000Z",
+      cancelAtPeriodEnd: false,
+      interval: "monthly",
+      entitlements: { aiInsights: true, futureProjection: true, unlimitedContexts: true, maxContexts: 9999 },
+    };
+    mockSwitchMutate.mockImplementation((_vars, opts) => opts.onError(new ApiError(402, "SUB-T0005")));
+    await render(<PlanScreen />);
+    fireEvent.press(screen.getByText("Anual"));
+    await waitFor(() => {
+      expect(screen.getByText("Falha no pagamento. Tente novamente.")).toBeTruthy();
+    });
+  });
+
+  it("shows the mapped error message when canceling fails", async () => {
+    mockSubData = {
+      plan: "premium",
+      status: "active",
+      currentPeriodEnd: "2099-01-01T00:00:00.000Z",
+      cancelAtPeriodEnd: false,
+      interval: "monthly",
+      entitlements: { aiInsights: true, futureProjection: true, unlimitedContexts: true, maxContexts: 9999 },
+    };
+    mockCancelMutate.mockImplementation((_vars, opts) => opts.onError(new ApiError(404, "SUB-T0004")));
+    await render(<PlanScreen />);
+    fireEvent.press(screen.getByText(/Cancelar assinatura/i));
+    await waitFor(() => {
+      expect(screen.getByText("Nenhuma assinatura ativa encontrada.")).toBeTruthy();
+    });
   });
 });
