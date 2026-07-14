@@ -54,7 +54,7 @@ export default function TransactionsScreen() {
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => <TransactionRow txn={item} />}
             ListEmptyComponent={
-              <Text className="text-neutral-500 dark:text-neutral-400">
+              <Text className="text-fg-secondary">
                 {t("transactions:empty")}
               </Text>
             }

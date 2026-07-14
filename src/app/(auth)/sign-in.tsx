@@ -25,7 +25,7 @@ export default function SignIn() {
   return (
     <ScreenContainer className="justify-center">
       <Text className="text-3xl font-bold">{t("common:appName")}</Text>
-      <Text className="mb-8 mt-1 text-neutral-500 dark:text-neutral-400">{t("auth:subtitle")}</Text>
+      <Text className="mb-8 mt-1 text-fg-secondary">{t("auth:subtitle")}</Text>
 
       <Button
         label={isGoogleConfigured() ? t("auth:signInGoogle") : t("auth:googleNotConfigured")}
@@ -36,7 +36,7 @@ export default function SignIn() {
 
       {__DEV__ && (
         <View className="mt-10">
-          <Text className="mb-2 text-sm text-neutral-500 dark:text-neutral-400">
+          <Text className="mb-2 text-sm text-fg-secondary">
             {t("auth:email")}
           </Text>
           <TextInput
@@ -45,7 +45,7 @@ export default function SignIn() {
             placeholder={t("auth:emailPlaceholder")}
             autoCapitalize="none"
             keyboardType="email-address"
-            className="mb-3 min-h-[48px] rounded-2xl border border-neutral-300 px-4 py-3 text-neutral-900 dark:border-neutral-700 dark:text-neutral-100"
+            className="mb-3 min-h-[48px] rounded-2xl border border-border px-4 py-3 text-fg"
           />
           <Button
             label={t("auth:devLogin")}

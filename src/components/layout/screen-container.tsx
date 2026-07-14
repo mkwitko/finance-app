@@ -11,7 +11,7 @@ export function ScreenContainer({
   className?: string;
 }) {
   return (
-    <SafeAreaView className="flex-1 bg-neutral-50 dark:bg-black" edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-bg" edges={["top"]}>
       <View className={cn("flex-1 px-4", className)}>{children}</View>
     </SafeAreaView>
   );

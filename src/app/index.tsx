@@ -6,7 +6,7 @@ export default function Index() {
   const { isAuthenticated, isLoading } = useAuth();
   if (isLoading) {
     return (
-      <View className="flex-1 items-center justify-center bg-neutral-50 dark:bg-black">
+      <View className="flex-1 items-center justify-center bg-bg">
         <ActivityIndicator />
       </View>
     );

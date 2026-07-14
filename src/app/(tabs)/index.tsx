@@ -32,7 +32,7 @@ export default function TodayScreen() {
       </Text>
 
       <Card className="mt-6">
-        <Text className="text-xs uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
+        <Text className="text-xs uppercase tracking-wide text-fg-secondary">
           {t("today:nextStepTitle")}
         </Text>
         <Text className="mt-2 text-lg">{t("today:nextStepEmpty")}</Text>

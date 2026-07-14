@@ -17,3 +17,8 @@ it("updates mode and accent", () => {
   expect(useThemeStore.getState().mode).toBe("dark");
   expect(useThemeStore.getState().accent).toBe("calm");
 });
+
+it("flips hasHydrated to true once the persisted selection has been read", async () => {
+  await new Promise((r) => setTimeout(r, 0));
+  expect(useThemeStore.getState().hasHydrated).toBe(true);
+});
