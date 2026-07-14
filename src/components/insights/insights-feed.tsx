@@ -1,4 +1,5 @@
 import { RefreshControl, ScrollView, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import { useGetInsights, useRefreshInsights } from "@/api/generated";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -8,6 +9,7 @@ import { InsightCard } from "@/components/insights/insight-card";
 import { useHouseholdStore } from "@/stores/household-store";
 
 export function InsightsFeed() {
+  const { t } = useTranslation();
   const householdId = useHouseholdStore((s) => s.activeHouseholdId);
   const { data, isLoading, isError, refetch } = useGetInsights(householdId ?? undefined, {
     query: { enabled: Boolean(householdId) },
@@ -25,9 +27,9 @@ export function InsightsFeed() {
   return (
     <View className="flex-1 bg-bg">
       <View className="flex-row items-center justify-between p-5">
-        <Text variant="title">Insights</Text>
+        <Text variant="title">{t("insights:title")}</Text>
         <Button
-          label="Atualizar"
+          label={t("insights:refreshButton")}
           variant="secondary"
           size="sm"
           onPress={onRefresh}
@@ -44,9 +46,9 @@ export function InsightsFeed() {
       ) : isError ? (
         <ScrollView testID="insights-scroll" contentContainerClassName="flex-grow" refreshControl={refreshControl}>
           <EmptyState
-            title="Não foi possível carregar os insights"
-            message="Puxe para atualizar ou tente novamente."
-            actionLabel="Tentar novamente"
+            title={t("insights:errorTitle")}
+            message={t("insights:errorMessage")}
+            actionLabel={t("insights:retryButton")}
             onAction={() => refetch()}
           />
         </ScrollView>
@@ -54,13 +56,13 @@ export function InsightsFeed() {
         <ScrollView testID="insights-scroll" contentContainerClassName="flex-grow" refreshControl={refreshControl}>
           {householdId ? (
             <EmptyState
-              title="Ainda não há insights"
-              message="Importe transações ou toque em Atualizar para gerar insights."
+              title={t("insights:emptyTitle")}
+              message={t("insights:emptyMessage")}
             />
           ) : (
             <EmptyState
-              title="Nenhum contexto ativo"
-              message="Selecione ou crie um contexto para ver insights."
+              title={t("insights:noHouseholdTitle")}
+              message={t("insights:noHouseholdMessage")}
             />
           )}
         </ScrollView>

@@ -93,4 +93,22 @@ export default {
       month: "30 dias",
     },
   },
+  insights: {
+    title: "Insights",
+    refreshButton: "Atualizar",
+    viewRecommendation: "Ver recomendação",
+    errorTitle: "Não foi possível carregar os insights",
+    errorMessage: "Puxe para atualizar ou tente novamente.",
+    retryButton: "Tentar novamente",
+    emptyTitle: "Ainda não há insights",
+    emptyMessage: "Importe transações ou toque em Atualizar para gerar insights.",
+    noHouseholdTitle: "Nenhum contexto ativo",
+    noHouseholdMessage: "Selecione ou crie um contexto para ver insights.",
+    paywallTitle: "Insights com IA",
+    severity: {
+      info: "Info",
+      warning: "Atenção",
+      positive: "Positivo",
+    },
+  },
 } as const;

@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { DisclosureSection } from "@/components/ui/disclosure-section";
@@ -18,25 +19,26 @@ const TONE: Record<Severity, "neutral" | "warning" | "income"> = {
   warning: "warning",
   positive: "income",
 };
-const SEVERITY_LABEL: Record<Severity, string> = {
-  info: "Info",
-  warning: "Atenção",
-  positive: "Positivo",
-};
 
 export function InsightCard({ insight }: { insight: Insight }) {
+  const { t } = useTranslation();
+  const SEVERITY_LABEL: Record<Severity, string> = {
+    info: t("insights:severity.info"),
+    warning: t("insights:severity.warning"),
+    positive: t("insights:severity.positive"),
+  };
   return (
     <Card className="gap-2">
       <View className="flex-row items-center justify-between">
         <Text variant="title">{insight.title}</Text>
         <Badge
-          label={SEVERITY_LABEL[insight.severity] ?? "Info"}
+          label={SEVERITY_LABEL[insight.severity] ?? t("insights:severity.info")}
           tone={TONE[insight.severity] ?? "neutral"}
         />
       </View>
       <Text className="text-fg-secondary">{insight.body}</Text>
       {insight.recommendation ? (
-        <DisclosureSection title="Ver recomendação">
+        <DisclosureSection title={t("insights:viewRecommendation")}>
           <Text className="text-fg">{insight.recommendation}</Text>
         </DisclosureSection>
       ) : null}
