@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 import { useRedeemInvitation } from "@/api/generated";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
@@ -14,6 +15,7 @@ export function RedeemCodeForm({
   initialCode?: string;
   onJoined: (h: { id: string }) => void;
 }) {
+  const { t } = useTranslation();
   const [code, setCode] = useState(initialCode);
   const [error, setError] = useState<string | null>(null);
   const setActive = useHouseholdStore((s) => s.setActiveHousehold);
@@ -40,9 +42,9 @@ export function RedeemCodeForm({
 
   return (
     <View className="gap-4">
-      <Field label="Código do convite" placeholder="Cole o código" value={code} onChangeText={setCode} autoCapitalize="none" testID="code-input" />
+      <Field label={t("contexts:redeemForm.codeLabel")} placeholder={t("contexts:redeemForm.codePlaceholder")} value={code} onChangeText={setCode} autoCapitalize="none" testID="code-input" />
       {error ? <Text className="text-expense">{error}</Text> : null}
-      <Button label="Entrar" onPress={submit} loading={redeem.isPending} disabled={code.trim().length === 0} />
+      <Button label={t("contexts:redeemForm.submit")} onPress={submit} loading={redeem.isPending} disabled={code.trim().length === 0} />
     </View>
   );
 }

@@ -37,5 +37,33 @@ export default {
     empty: "Nenhum lançamento ainda. Importe um extrato ou adicione um.",
     import: "Importar extrato",
     aiTag: "IA",
+    createAccount: "Criar conta",
+  },
+  contexts: {
+    title: "Contextos",
+    emptyTitle: "Nenhum contexto",
+    emptyMessage: "Crie seu primeiro contexto para começar.",
+    active: "Ativo",
+    createButton: "Criar contexto",
+    redeemButton: "Entrar com código",
+    switchButton: "Trocar contexto",
+    joinTitle: "Entrar em um contexto",
+    types: {
+      individual: "Pessoal",
+      family: "Família",
+      shared: "Casal",
+      kids: "Criança",
+    },
+    form: {
+      nameLabel: "Nome",
+      namePlaceholder: "Nome do contexto",
+      typeLabel: "Tipo",
+      submit: "Criar",
+    },
+    redeemForm: {
+      codeLabel: "Código do convite",
+      codePlaceholder: "Cole o código",
+      submit: "Entrar",
+    },
   },
 } as const;
