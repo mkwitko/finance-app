@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react-native";
-import PlanScreen from "./plan";
+import PlanScreen from "@/app/(tabs)/settings/plan";
 
 // plan.tsx -> @/lib/context-errors -> @/api/client -> @/lib/auth, which pulls in
 // the native google-signin module. Mock it before any imports resolve it.

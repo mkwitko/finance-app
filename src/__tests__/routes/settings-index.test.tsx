@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react-native";
-import SettingsHub from "./index";
+import SettingsHub from "@/app/(tabs)/settings/index";
 
 jest.mock("expo-router", () => ({ useRouter: () => ({ push: jest.fn() }) }));
 
