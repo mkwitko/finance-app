@@ -30,6 +30,7 @@ export type { InsightsKindEnum2Key, InsightsSeverityEnum2Key, RefreshInsights200
 export type { RemoveMember204, RemoveMemberMutation, RemoveMemberMutationResponse, RemoveMemberPathParams } from "./RemoveMember.ts";
 export type { RevokeInvitation204, RevokeInvitationMutation, RevokeInvitationMutationResponse, RevokeInvitationPathParams } from "./RevokeInvitation.ts";
 export type { SwitchSubscriptionInterval200, SwitchSubscriptionInterval200IntervalEnumKey, SwitchSubscriptionInterval200PlanEnumKey, SwitchSubscriptionInterval200StatusEnumKey, SwitchSubscriptionIntervalMutation, SwitchSubscriptionIntervalMutationRequest, SwitchSubscriptionIntervalMutationRequestIntervalEnumKey, SwitchSubscriptionIntervalMutationResponse, SwitchSubscriptionIntervalPathParams } from "./SwitchSubscriptionInterval.ts";
+export type { TransferOwnership200, TransferOwnership200OkEnumKey, TransferOwnershipMutation, TransferOwnershipMutationRequest, TransferOwnershipMutationResponse, TransferOwnershipPathParams } from "./TransferOwnership.ts";
 export type { UpdateMemberRole200, UpdateMemberRole200RoleEnumKey, UpdateMemberRoleMutation, UpdateMemberRoleMutationRequest, UpdateMemberRoleMutationRequestRoleEnumKey, UpdateMemberRoleMutationResponse, UpdateMemberRolePathParams } from "./UpdateMemberRole.ts";
 export { cancelSubscription200IntervalEnum } from "./CancelSubscription.ts";
 export { cancelSubscription200PlanEnum } from "./CancelSubscription.ts";
@@ -73,5 +74,6 @@ export { switchSubscriptionInterval200IntervalEnum } from "./SwitchSubscriptionI
 export { switchSubscriptionInterval200PlanEnum } from "./SwitchSubscriptionInterval.ts";
 export { switchSubscriptionInterval200StatusEnum } from "./SwitchSubscriptionInterval.ts";
 export { switchSubscriptionIntervalMutationRequestIntervalEnum } from "./SwitchSubscriptionInterval.ts";
+export { transferOwnership200OkEnum } from "./TransferOwnership.ts";
 export { updateMemberRole200RoleEnum } from "./UpdateMemberRole.ts";
 export { updateMemberRoleMutationRequestRoleEnum } from "./UpdateMemberRole.ts";

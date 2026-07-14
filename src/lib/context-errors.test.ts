@@ -31,6 +31,11 @@ describe("contextErrorMessage", () => {
     expect(contextErrorMessage(new ApiError(502, "SUB-T0005"))).toMatch(/pagamento/i);
   });
 
+  it("maps ownership-transfer codes", () => {
+    expect(contextErrorMessage(new ApiError(409, "HH-T0006"))).toMatch(/propriedade/i);
+    expect(contextErrorMessage(new ApiError(409, "SUB-T0007"))).toMatch(/e-mail/i);
+  });
+
   it("falls back for unknown errors", () => {
     expect(contextErrorMessage(new ApiError(500, "SYS-T0001"))).toMatch(/algo deu errado/i);
     expect(contextErrorMessage(new Error("boom"))).toMatch(/algo deu errado/i);

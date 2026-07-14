@@ -28,4 +28,5 @@ export { refreshInsights } from "./refreshInsights.ts";
 export { removeMember } from "./removeMember.ts";
 export { revokeInvitation } from "./revokeInvitation.ts";
 export { switchSubscriptionInterval } from "./switchSubscriptionInterval.ts";
+export { transferOwnership } from "./transferOwnership.ts";
 export { updateMemberRole } from "./updateMemberRole.ts";
