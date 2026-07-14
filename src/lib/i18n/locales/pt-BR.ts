@@ -7,6 +7,7 @@ export default {
     loading: "Carregando…",
     signOut: "Sair",
     cancel: "Cancelar",
+    remove: "Remover",
   },
   auth: {
     title: "Entrar",
