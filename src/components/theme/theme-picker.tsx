@@ -1,4 +1,5 @@
 import { Pressable, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
 import { Segmented } from "@/components/ui/segmented";
@@ -7,27 +8,27 @@ import { useTheme } from "@/theme/theme-provider";
 import { THEMES, type Accent } from "@/theme/theme-tokens";
 import type { Mode } from "@/stores/theme-store";
 
-const MODES: { value: Mode; label: string }[] = [
-  { value: "light", label: "Claro" },
-  { value: "dark", label: "Escuro" },
-  { value: "system", label: "Sistema" },
-];
-const ACCENTS: { value: Accent; label: string }[] = [
-  { value: "calm", label: "Calm" },
-  { value: "bold", label: "Bold" },
-  { value: "warm", label: "Warm" },
-];
-
 export function ThemePicker() {
+  const { t } = useTranslation();
+  const MODES: { value: Mode; label: string }[] = [
+    { value: "light", label: t("theme:modes.light") },
+    { value: "dark", label: t("theme:modes.dark") },
+    { value: "system", label: t("theme:modes.system") },
+  ];
+  const ACCENTS: { value: Accent; label: string }[] = [
+    { value: "calm", label: t("theme:accents.calm") },
+    { value: "bold", label: t("theme:accents.bold") },
+    { value: "warm", label: t("theme:accents.warm") },
+  ];
   const { mode, accent, scheme, setMode, setAccent } = useTheme();
   return (
     <Card className="gap-5">
       <View className="gap-2">
-        <Text variant="label">Modo</Text>
+        <Text variant="label">{t("theme:modeLabel")}</Text>
         <Segmented options={MODES} value={mode} onChange={setMode} />
       </View>
       <View className="gap-2">
-        <Text variant="label">Acento</Text>
+        <Text variant="label">{t("theme:accentLabel")}</Text>
         <View className="flex-row gap-3">
           {ACCENTS.map((a) => {
             const selected = a.value === accent;
@@ -35,7 +36,7 @@ export function ThemePicker() {
               <Pressable
                 key={a.value}
                 accessibilityRole="button"
-                accessibilityLabel={`Acento ${a.label}`}
+                accessibilityLabel={t("theme:accentAccessibilityLabel", { label: a.label })}
                 accessibilityState={{ selected }}
                 onPress={() => setAccent(a.value)}
                 className={cn(

@@ -160,4 +160,20 @@ export default {
     cancelConfirmMessage: "Você manterá o acesso até o fim do período pago. Confirmar?",
     cancelConfirmBack: "Voltar",
   },
+  theme: {
+    screenTitle: "Aparência",
+    modeLabel: "Modo",
+    accentLabel: "Acento",
+    accentAccessibilityLabel: "Acento {{label}}",
+    modes: {
+      light: "Claro",
+      dark: "Escuro",
+      system: "Sistema",
+    },
+    accents: {
+      calm: "Calm",
+      bold: "Bold",
+      warm: "Warm",
+    },
+  },
 } as const;
