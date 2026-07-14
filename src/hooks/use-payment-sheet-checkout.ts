@@ -1,12 +1,16 @@
 import { initStripe, useStripe } from "@stripe/stripe-react-native";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { useCheckoutSubscription } from "@/api/generated";
+import { getSubscriptionQueryKey, useCheckoutSubscription } from "@/api/generated";
 import { contextErrorMessage } from "@/lib/context-errors";
 import { useHouseholdStore } from "@/stores/household-store";
 
 type BillingInterval = "monthly" | "annual";
 type Result = { ok: boolean; canceled?: boolean; error?: string };
+
+const MAX_POLLS = 5;
+const POLL_INTERVAL_MS = 1200;
+const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
 export function usePaymentSheetCheckout() {
   const householdId = useHouseholdStore((s) => s.activeHouseholdId);
@@ -37,7 +41,13 @@ export function usePaymentSheetCheckout() {
         const canceled = presentError.code === "Canceled";
         return { ok: false, canceled, error: canceled ? undefined : presentError.message };
       }
-      await queryClient.invalidateQueries();
+      const subscriptionQueryKey = getSubscriptionQueryKey(householdId);
+      for (let i = 0; i < MAX_POLLS; i++) {
+        await queryClient.refetchQueries({ queryKey: subscriptionQueryKey });
+        const cur = queryClient.getQueryData(subscriptionQueryKey) as { plan?: string } | undefined;
+        if (cur?.plan === "premium") break;
+        if (i < MAX_POLLS - 1) await sleep(POLL_INTERVAL_MS);
+      }
       return { ok: true };
     } catch (e) {
       return { ok: false, error: contextErrorMessage(e) };

@@ -1,4 +1,5 @@
 import { renderHook, act } from "@testing-library/react-native";
+import { getSubscriptionQueryKey } from "@/api/generated";
 import { usePaymentSheetCheckout } from "./use-payment-sheet-checkout";
 
 // use-payment-sheet-checkout.ts -> @/lib/context-errors -> @/api/client -> @/lib/auth,
@@ -19,21 +20,27 @@ jest.mock("expo-secure-store", () => ({
 const mockCheckoutMutate = jest.fn();
 const mockInitPaymentSheet = jest.fn().mockResolvedValue({ error: undefined });
 const mockPresentPaymentSheet = jest.fn().mockResolvedValue({ error: undefined });
-const mockInvalidateQueries = jest.fn();
+const mockRefetchQueries = jest.fn().mockResolvedValue(undefined);
+const mockGetQueryData = jest.fn().mockReturnValue({ plan: "premium" });
 const mockInitStripe = jest.fn().mockResolvedValue(undefined);
 
-jest.mock("@/api/generated", () => ({ useCheckoutSubscription: () => ({ mutateAsync: mockCheckoutMutate }) }));
+jest.mock("@/api/generated", () => ({
+  useCheckoutSubscription: () => ({ mutateAsync: mockCheckoutMutate }),
+  getSubscriptionQueryKey: (id: string | undefined) => [{ url: "/households/:id/subscription", params: { id } }],
+}));
 jest.mock("@stripe/stripe-react-native", () => ({
   initStripe: (...args: unknown[]) => mockInitStripe(...args),
   useStripe: () => ({ initPaymentSheet: mockInitPaymentSheet, presentPaymentSheet: mockPresentPaymentSheet }),
 }));
 jest.mock("@/stores/household-store", () => ({ useHouseholdStore: (sel: (s: unknown) => unknown) => sel({ activeHouseholdId: "hh-1" }) }));
-jest.mock("@tanstack/react-query", () => ({ useQueryClient: () => ({ invalidateQueries: mockInvalidateQueries }) }));
+jest.mock("@tanstack/react-query", () => ({
+  useQueryClient: () => ({ refetchQueries: mockRefetchQueries, getQueryData: mockGetQueryData }),
+}));
 
 describe("usePaymentSheetCheckout", () => {
   beforeEach(() => jest.clearAllMocks());
 
-  it("runs checkout, inits + presents the sheet, invalidates on success", async () => {
+  it("runs checkout, inits + presents the sheet, polls subscription on success", async () => {
     mockCheckoutMutate.mockResolvedValue({ paymentIntentClientSecret: "pi_x", ephemeralKeySecret: "ek_x", customerId: "cus_x", publishableKey: "pk_x" });
     const { result } = await renderHook(() => usePaymentSheetCheckout());
     let out: { ok: boolean } | undefined;
@@ -44,7 +51,8 @@ describe("usePaymentSheetCheckout", () => {
     expect(mockInitStripe).toHaveBeenCalledWith(expect.objectContaining({ publishableKey: "pk_x" }));
     expect(mockInitPaymentSheet).toHaveBeenCalled();
     expect(mockPresentPaymentSheet).toHaveBeenCalled();
-    expect(mockInvalidateQueries).toHaveBeenCalled();
+    expect(mockRefetchQueries).toHaveBeenCalledWith({ queryKey: getSubscriptionQueryKey("hh-1") });
+    expect(mockRefetchQueries).toHaveBeenCalledTimes(1);
     expect(out?.ok).toBe(true);
   });
 
@@ -58,6 +66,6 @@ describe("usePaymentSheetCheckout", () => {
     });
     expect(out?.ok).toBe(false);
     expect(out?.canceled).toBe(true);
-    expect(mockInvalidateQueries).not.toHaveBeenCalled();
+    expect(mockRefetchQueries).not.toHaveBeenCalled();
   });
 });
