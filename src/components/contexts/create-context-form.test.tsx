@@ -35,7 +35,7 @@ it("submits name + selected type, and switches to the new context on success", a
 
   await waitFor(() => {
     const criarButton = getByText("Criar");
-    expect(criarButton.parent.props.accessibilityState.disabled).toBe(false);
+    expect(criarButton.parent?.props.accessibilityState.disabled).toBe(false);
   });
 
   fireEvent.press(getByText("Criar"));
