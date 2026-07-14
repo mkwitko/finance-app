@@ -27,6 +27,13 @@ export default function TabsLayout() {
           tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 20 }}>✦</Text>,
         }}
       />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: t("tabs:settings"),
+          tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 20 }}>⚙</Text>,
+        }}
+      />
     </Tabs>
   );
 }

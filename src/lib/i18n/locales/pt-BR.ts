@@ -22,6 +22,7 @@ export default {
     today: "Hoje",
     transactions: "Lançamentos",
     insights: "Insights",
+    settings: "Ajustes",
   },
   today: {
     greeting: "Olá, {{name}}",
