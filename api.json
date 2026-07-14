@@ -611,6 +611,23 @@
                         }
                       ]
                     },
+                    "cancelAtPeriodEnd": {
+                      "type": "boolean"
+                    },
+                    "interval": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "monthly",
+                            "annual"
+                          ]
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
                     "entitlements": {
                       "type": "object",
                       "properties": {
@@ -642,6 +659,8 @@
                     "plan",
                     "status",
                     "currentPeriodEnd",
+                    "cancelAtPeriodEnd",
+                    "interval",
                     "entitlements"
                   ],
                   "additionalProperties": false
@@ -652,13 +671,116 @@
         }
       }
     },
-    "/households/{id}/subscription/activate": {
+    "/households/{id}/subscription/checkout": {
       "post": {
-        "operationId": "activateSubscription",
-        "summary": "Activate premium (stub)",
+        "operationId": "checkoutSubscription",
+        "summary": "Start a subscription (PaymentSheet)",
         "tags": [
           "subscriptions"
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "interval": {
+                    "type": "string",
+                    "enum": [
+                      "monthly",
+                      "annual"
+                    ]
+                  }
+                },
+                "required": [
+                  "interval"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "paymentIntentClientSecret": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "ephemeralKeySecret": {
+                      "type": "string"
+                    },
+                    "customerId": {
+                      "type": "string"
+                    },
+                    "publishableKey": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "paymentIntentClientSecret",
+                    "ephemeralKeySecret",
+                    "customerId",
+                    "publishableKey"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/households/{id}/subscription/switch": {
+      "post": {
+        "operationId": "switchSubscriptionInterval",
+        "summary": "Switch monthly/annual",
+        "tags": [
+          "subscriptions"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "interval": {
+                    "type": "string",
+                    "enum": [
+                      "monthly",
+                      "annual"
+                    ]
+                  }
+                },
+                "required": [
+                  "interval"
+                ]
+              }
+            }
+          }
+        },
         "parameters": [
           {
             "schema": {
@@ -702,6 +824,23 @@
                         }
                       ]
                     },
+                    "cancelAtPeriodEnd": {
+                      "type": "boolean"
+                    },
+                    "interval": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "monthly",
+                            "annual"
+                          ]
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
                     "entitlements": {
                       "type": "object",
                       "properties": {
@@ -733,6 +872,8 @@
                     "plan",
                     "status",
                     "currentPeriodEnd",
+                    "cancelAtPeriodEnd",
+                    "interval",
                     "entitlements"
                   ],
                   "additionalProperties": false
@@ -746,7 +887,7 @@
     "/households/{id}/subscription/cancel": {
       "post": {
         "operationId": "cancelSubscription",
-        "summary": "Cancel subscription",
+        "summary": "Cancel at period end",
         "tags": [
           "subscriptions"
         ],
@@ -793,6 +934,23 @@
                         }
                       ]
                     },
+                    "cancelAtPeriodEnd": {
+                      "type": "boolean"
+                    },
+                    "interval": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "monthly",
+                            "annual"
+                          ]
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
                     "entitlements": {
                       "type": "object",
                       "properties": {
@@ -824,6 +982,8 @@
                     "plan",
                     "status",
                     "currentPeriodEnd",
+                    "cancelAtPeriodEnd",
+                    "interval",
                     "entitlements"
                   ],
                   "additionalProperties": false
