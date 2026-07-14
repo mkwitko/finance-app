@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import { useCommitImport, useListAccounts, useListCategories, usePreviewImport } from "@/api/generated";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -28,6 +29,7 @@ const SOURCES: { value: Source; label: string }[] = [
 ];
 
 export function ImportWizard({ onDone }: { onDone: () => void }) {
+  const { t } = useTranslation();
   const [step, setStep] = useState<Step>("account");
   const [accountId, setAccountId] = useState<string | null>(null);
   const [bankId, setBankId] = useState("nubank");
@@ -113,7 +115,7 @@ export function ImportWizard({ onDone }: { onDone: () => void }) {
       <ScrollView className="flex-1 p-5" contentContainerStyle={{ gap: 12 }}>
         {step === "account" && (
           <View className="gap-2">
-            <Text variant="title">Qual conta?</Text>
+            <Text variant="title">{t("imports:accountStepTitle")}</Text>
             {accounts.map((a) => (
               <ListRow
                 key={a.id}
@@ -127,10 +129,10 @@ export function ImportWizard({ onDone }: { onDone: () => void }) {
         )}
         {step === "source" && (
           <View className="gap-3">
-            <Text variant="title">Como baixar seu extrato</Text>
+            <Text variant="title">{t("imports:sourceStepTitle")}</Text>
             <Segmented options={SOURCES} value={source} onChange={setSource} />
             <View className="gap-2">
-              <Text variant="label">Seu banco</Text>
+              <Text variant="label">{t("imports:bankLabel")}</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingRight: 8 }}>
                 {BANK_GUIDES.map((g) => {
                   const selected = g.id === bankId;
@@ -162,18 +164,18 @@ export function ImportWizard({ onDone }: { onDone: () => void }) {
         )}
         {step === "file" && (
           <View className="gap-3">
-            <Text variant="title">Arquivo</Text>
+            <Text variant="title">{t("imports:fileStepTitle")}</Text>
             {file ? (
-              <ListRow title={file.name} subtitle="selecionado" />
+              <ListRow title={file.name} subtitle={t("imports:fileSelected")} />
             ) : (
-              <Text className="text-fg-secondary">Nenhum arquivo</Text>
+              <Text className="text-fg-secondary">{t("imports:noFile")}</Text>
             )}
-            <Text className="text-accent" onPress={pick}>Escolher outro arquivo</Text>
+            <Text className="text-accent" onPress={pick}>{t("imports:pickAnotherFile")}</Text>
           </View>
         )}
         {step === "review" && (
           <View>
-            <Text variant="title" className="mb-2">Revisar · {rows.length} encontradas</Text>
+            <Text variant="title" className="mb-2">{t("imports:reviewTitle", { count: rows.length })}</Text>
             {rows.map((r, i) => (
               <ReviewRow
                 key={`${r.rawRef ?? "n"}-${i}`}
@@ -188,9 +190,9 @@ export function ImportWizard({ onDone }: { onDone: () => void }) {
         {step === "result" && result && (
           <View className="items-center gap-2 py-8">
             <Text variant="display" className="text-income">{result.imported}</Text>
-            <Text className="text-fg-secondary">{result.imported} importada(s)</Text>
-            {result.skipped > 0 ? <Text className="text-fg-secondary">{result.skipped} pulada(s)</Text> : null}
-            <Text className="text-accent mt-4" onPress={reset}>Importar outro</Text>
+            <Text className="text-fg-secondary">{t("imports:importedCount", { count: result.imported })}</Text>
+            {result.skipped > 0 ? <Text className="text-fg-secondary">{t("imports:skippedCount", { count: result.skipped })}</Text> : null}
+            <Text className="text-accent mt-4" onPress={reset}>{t("imports:importAnother")}</Text>
           </View>
         )}
       </ScrollView>
@@ -198,11 +200,11 @@ export function ImportWizard({ onDone }: { onDone: () => void }) {
       {error ? <Text className="px-5 pb-2 text-expense">{error}</Text> : null}
 
       {step === "account" && (
-        <WizardFooter primaryLabel="Continuar" primaryDisabled={!accountId} onPrimary={() => setStep("source")} />
+        <WizardFooter primaryLabel={t("imports:continueButton")} primaryDisabled={!accountId} onPrimary={() => setStep("source")} />
       )}
       {step === "source" && (
         <WizardFooter
-          primaryLabel="Escolher arquivo"
+          primaryLabel={t("imports:pickFileButton")}
           primaryLoading={picking}
           onBack={() => setStep("account")}
           onPrimary={pick}
@@ -210,7 +212,7 @@ export function ImportWizard({ onDone }: { onDone: () => void }) {
       )}
       {step === "file" && (
         <WizardFooter
-          primaryLabel="Analisar extrato"
+          primaryLabel={t("imports:analyzeButton")}
           primaryLoading={preview.isPending}
           primaryDisabled={!file}
           onBack={() => setStep("source")}
@@ -219,14 +221,14 @@ export function ImportWizard({ onDone }: { onDone: () => void }) {
       )}
       {step === "review" && (
         <WizardFooter
-          primaryLabel={`Importar ${includedCount}`}
+          primaryLabel={t("imports:importButton", { count: includedCount })}
           primaryLoading={commit.isPending}
           primaryDisabled={includedCount === 0}
           onBack={() => setStep("file")}
           onPrimary={doCommit}
         />
       )}
-      {step === "result" && <WizardFooter primaryLabel="Ver transações" onPrimary={onDone} />}
+      {step === "result" && <WizardFooter primaryLabel={t("imports:viewTransactionsButton")} onPrimary={onDone} />}
 
       <CategoryPickerSheet
         visible={pickingCategory !== null}

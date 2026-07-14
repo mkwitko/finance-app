@@ -1,4 +1,5 @@
 import { Pressable, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import { AmountText } from "@/components/ui/amount-text";
 import { Badge } from "@/components/ui/badge";
@@ -23,6 +24,7 @@ export function ReviewRow({
   onToggle: () => void;
   onEditCategory: () => void;
 }) {
+  const { t } = useTranslation();
   const signed = row.direction === "out" ? -row.amountCents : row.amountCents;
   return (
     <View className="flex-row items-center gap-3 border-b border-border py-3">
@@ -40,10 +42,10 @@ export function ReviewRow({
       <View className="flex-1 gap-1">
         <View className="flex-row items-baseline gap-2">
           <Text className="text-fg flex-1">{row.description}</Text>
-          {row.duplicate ? <Text className="text-xs text-warning">duplicada</Text> : null}
+          {row.duplicate ? <Text className="text-xs text-warning">{t("imports:duplicateLabel")}</Text> : null}
         </View>
         <Pressable accessibilityRole="button" onPress={onEditCategory} className="self-start">
-          <Badge label={row.suggestedCategory ?? "Sem categoria"} tone="neutral" />
+          <Badge label={row.suggestedCategory ?? t("imports:noCategory")} tone="neutral" />
         </Pressable>
       </View>
       <AmountText cents={signed} />

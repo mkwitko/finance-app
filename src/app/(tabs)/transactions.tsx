@@ -26,7 +26,7 @@ export default function TransactionsScreen() {
       {enabled && !firstAccount && (
         <Button
           className="mt-4"
-          label="Criar conta"
+          label={t("transactions:createAccount")}
           loading={createAccount.isPending}
           onPress={() =>
             createAccount.mutate(
@@ -40,7 +40,7 @@ export default function TransactionsScreen() {
       {firstAccount && (
         <Button
           className="mt-4"
-          label="Importar extrato"
+          label={t("transactions:import")}
           onPress={() => router.push("/import")}
         />
       )}
