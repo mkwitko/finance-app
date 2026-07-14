@@ -8,9 +8,11 @@
     "scheme": "financeapp",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/expo.icon",
+      "bundleIdentifier": "br.com.atlas"
     },
     "android": {
+      "package": "br.com.atlas",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -35,7 +37,12 @@
       ],
       "expo-secure-store",
       "expo-localization",
-      "@react-native-google-signin/google-signin",
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.724602215602-rtihf999gbs4b5f546rhogsv1vnig32p"
+        }
+      ],
       [
         "@stripe/stripe-react-native",
         {
