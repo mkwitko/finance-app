@@ -1,4 +1,4 @@
-import { useStripe } from "@stripe/stripe-react-native";
+import { initStripe, useStripe } from "@stripe/stripe-react-native";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useCheckoutSubscription } from "@/api/generated";
@@ -20,6 +20,9 @@ export function usePaymentSheetCheckout() {
     setIsBusy(true);
     try {
       const session = await checkout.mutateAsync({ id: householdId, data: { interval } });
+      if (session.publishableKey) {
+        await initStripe({ publishableKey: session.publishableKey, merchantIdentifier: "merchant.com.financeapp" });
+      }
       const { error: initError } = await initPaymentSheet({
         merchantDisplayName: "Finance",
         customerId: session.customerId,

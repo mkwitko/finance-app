@@ -7,6 +7,7 @@ jest.mock("@stripe/stripe-react-native", () => {
   const React = require("react");
   return {
     StripeProvider: ({ children }: { children: React.ReactNode }) => children,
+    initStripe: jest.fn().mockResolvedValue(undefined),
     useStripe: () => ({
       initPaymentSheet: jest.fn().mockResolvedValue({ error: undefined }),
       presentPaymentSheet: jest.fn().mockResolvedValue({ error: undefined }),

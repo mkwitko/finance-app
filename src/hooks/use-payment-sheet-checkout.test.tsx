@@ -20,9 +20,11 @@ const mockCheckoutMutate = jest.fn();
 const mockInitPaymentSheet = jest.fn().mockResolvedValue({ error: undefined });
 const mockPresentPaymentSheet = jest.fn().mockResolvedValue({ error: undefined });
 const mockInvalidateQueries = jest.fn();
+const mockInitStripe = jest.fn().mockResolvedValue(undefined);
 
 jest.mock("@/api/generated", () => ({ useCheckoutSubscription: () => ({ mutateAsync: mockCheckoutMutate }) }));
 jest.mock("@stripe/stripe-react-native", () => ({
+  initStripe: (...args: unknown[]) => mockInitStripe(...args),
   useStripe: () => ({ initPaymentSheet: mockInitPaymentSheet, presentPaymentSheet: mockPresentPaymentSheet }),
 }));
 jest.mock("@/stores/household-store", () => ({ useHouseholdStore: (sel: (s: unknown) => unknown) => sel({ activeHouseholdId: "hh-1" }) }));
@@ -39,6 +41,7 @@ describe("usePaymentSheetCheckout", () => {
       out = await result.current.subscribe("monthly");
     });
     expect(mockCheckoutMutate).toHaveBeenCalledWith({ id: "hh-1", data: { interval: "monthly" } });
+    expect(mockInitStripe).toHaveBeenCalledWith(expect.objectContaining({ publishableKey: "pk_x" }));
     expect(mockInitPaymentSheet).toHaveBeenCalled();
     expect(mockPresentPaymentSheet).toHaveBeenCalled();
     expect(mockInvalidateQueries).toHaveBeenCalled();
